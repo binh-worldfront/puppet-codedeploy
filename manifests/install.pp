@@ -24,22 +24,20 @@ class codedeploy::install {
           ensure => present,
         }
       }
-      exec { 'download_codedeploy_installer':
-        command => '/usr/bin/aws s3 cp s3://aws-codedeploy-us-east-1/latest/install . --region us-east-1',
-        cwd     => '/tmp',
-        creates => '/tmp/install',
+      include ::staging
+      staging::file {'download_codedeploy_installer':
+        source  => "https://aws-codedeploy-${codedeploy::region}.s3.amazonaws.com/latest/install",
       }
-      file { '/tmp/install':
+      file { "${::staging::path}/install":
         ensure    => file,
         owner     => 'root',
         group     => 'root',
         mode      => '0740',
-        subscribe => Exec['download_codedeploy_installer'],
+        subscribe => Staging::File['download_codedeploy_installer'],
         notify    => Exec['install_codedeploy_agent'],
       }
       exec { 'install_codedeploy_agent':
-        command     => '/tmp/install auto',
-        cwd         => '/tmp',
+        command     => "${::staging::path}/install auto",
         refreshonly => true,
       }
     }

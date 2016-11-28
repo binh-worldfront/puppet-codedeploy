@@ -18,4 +18,20 @@ class codedeploy::config {
     default: {
     }
   }
+
+  if $::codedeploy::user {
+    file {[$::codedeploy::base_dir, $::codedeploy::log_dir]:
+      ensure  => directory,
+      owner   => $::codedeploy::user,
+      recurse => true
+    }
+
+    file_line{'set codedeploy user':
+      ensure => present,
+      path   => '/etc/init.d/codedeploy-agent',
+      match  => '^CODEDEPLOY_USER=.*',
+      line   => "CODEDEPLOY_USER=\"${::codedeploy::user}\"",
+      notify => Service[$::codedeploy::service_name]
+    }
+  }
 }
