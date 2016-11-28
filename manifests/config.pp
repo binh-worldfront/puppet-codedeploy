@@ -23,6 +23,7 @@ class codedeploy::config {
     file {[$::codedeploy::base_dir, $::codedeploy::log_dir]:
       ensure  => directory,
       owner   => $::codedeploy::user,
+      group   => $::codedeploy::user,
       recurse => true
     }
 
