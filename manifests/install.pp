@@ -25,11 +25,15 @@ class codedeploy::install {
         }
       }
       include ::staging
-      staging::file {'download_codedeploy_installer':
+      staging::file {'install':
         source  => "https://aws-codedeploy-${codedeploy::region}.s3.amazonaws.com/latest/install",
+      }
+      file { "${::staging::path}/codedeploy/install":
+        ensure    => file,
         owner     => 'root',
         group     => 'root',
         mode      => '0740',
+        subscribe => Staging::File['install'],
         notify    => Exec['install_codedeploy_agent'],
       }
       exec { 'install_codedeploy_agent':
