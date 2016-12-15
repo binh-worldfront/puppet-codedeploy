@@ -19,6 +19,16 @@ class codedeploy::install {
       }
     }
     'Debian': {
+      if $::codedeploy::user {
+        file {[$::codedeploy::base_dir, $::codedeploy::log_dir]:
+          ensure  => directory,
+          owner   => $::codedeploy::user,
+          group   => $::codedeploy::user,
+          before  => Exec['install_codedeploy_agent'],
+          recurse => true
+        }
+      }
+
       if ! defined(Package['awscli']) {
         package { 'awscli':
           ensure => present,
@@ -32,12 +42,13 @@ class codedeploy::install {
         ensure    => file,
         owner     => 'root',
         group     => 'root',
-        mode      => '0740',
+        mode      => '0755',
         subscribe => Staging::File['install'],
         notify    => Exec['install_codedeploy_agent'],
       }
       exec { 'install_codedeploy_agent':
         command     => "${::staging::path}/codedeploy/install auto",
+        user        => $::codedeploy::params::user,
         refreshonly => true,
       }
     }
