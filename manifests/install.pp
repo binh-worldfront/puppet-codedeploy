@@ -58,12 +58,12 @@ class codedeploy::install {
       }
 
       ~> exec { 'update_codedeploy_direcotries':
-        command     => "chown -R ${::codedeploy::user} ${::codedeploy::base_dir}",
+        command     => "chown -R ${::codedeploy::user}: ${::codedeploy::base_dir}",
         refreshonly => true
       }
 
       ~> exec { 'update_codedeploy_log_direcotries':
-        command     => "chown -R ${::codedeploy::user} ${::codedeploy::log_dir}",
+        command     => "chown -R ${::codedeploy::user}: ${::codedeploy::log_dir}",
         refreshonly => true
       }
     }
