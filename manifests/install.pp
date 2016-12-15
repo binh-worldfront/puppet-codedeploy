@@ -25,7 +25,6 @@ class codedeploy::install {
           owner   => $::codedeploy::user,
           group   => $::codedeploy::user,
           before  => Exec['install_codedeploy_agent'],
-          recurse => true
         }
       }
 
