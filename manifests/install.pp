@@ -46,10 +46,25 @@ class codedeploy::install {
         subscribe => Staging::File['install'],
         notify    => Exec['install_codedeploy_agent'],
       }
+
       exec { 'install_codedeploy_agent':
         command     => "${::staging::path}/codedeploy/install auto",
-        user        => $::codedeploy::params::user,
         refreshonly => true,
+      }
+
+      ~> exec { 'stop_codeploy_agent_after_install':
+        command     => "service ${::codedeploy::service_name} stop",
+        refreshonly => true
+      }
+
+      ~> exec { 'update_codedeploy_direcotries':
+        command     => "chown -R ${::codedeploy::user} ${::codedeploy::base_dir}",
+        refreshonly => true
+      }
+
+      ~> exec { 'update_codedeploy_log_direcotries':
+        command     => "chown -R ${::codedeploy::user} ${::codedeploy::log_dir}",
+        refreshonly => true
       }
     }
     default: {
