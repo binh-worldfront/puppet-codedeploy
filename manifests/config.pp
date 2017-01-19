@@ -2,7 +2,17 @@
 #
 # This class is called from codedeploy for install.
 #
-class codedeploy::config {
+class codedeploy::config (
+  $log_aws_wire      = $::codedeploy::params::log_aws_wire,
+  $log_dir           = $::codedeploy::params::log_dir,
+  $pid_dir           = $::codedeploy::params::pid_dir,
+  $program_name      = $::codedeploy::params::program_name,
+  $root_dir          = $::codedeploy::params::root_dir,
+  $verbose           = $::codedeploy::params::verbose,
+  $wait_between_runs = $::codedeploy::params::wait_between_runs,
+  $max_revisions     = $::codedeploy::params::max_revisions,
+  $proxy_uri         = '',
+) {
   case $::osfamily {
     'RedHat', 'Amazon', 'Debian': {
       file {

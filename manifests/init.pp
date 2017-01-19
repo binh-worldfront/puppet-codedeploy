@@ -28,7 +28,17 @@ class codedeploy (
 
   # validate parameters here
   class { '::codedeploy::install': } ->
-  class { '::codedeploy::config': } ->
+  class { '::codedeploy::config':
+    log_aws_wire      => $log_aws_wire,
+    log_dir           => $log_dir,
+    pid_dir           => $pid_dir,
+    program_name      => $program_name,
+    root_dir          => $root_dir,
+    verbose           => $verbose,
+    wait_between_runs => $wait_between_runs,
+    max_revisions     => $max_revisions,
+    proxy_uri         => $proxy_uri,
+  } ->
   class { '::codedeploy::service': } ->
   Class['::codedeploy']
 }
