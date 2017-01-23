@@ -42,11 +42,7 @@ class codedeploy::install {
 
       }
 
-      notify{"Path: ${::staging::path}": }
-      notify{"Path: ${::staging::path}/codedeploy/install": }
-
-      Class['staging'] -> Class['codedeploy::install']
-      File<| $title == "${::staging::path}/codedeploy/install" |> ~> Exec['install_codedeploy_agent']
+      Exec<| $title == "${::staging::path}/codedeploy/install" |> ~> Exec['install_codedeploy_agent']
 
       exec { 'install_codedeploy_agent':
         command     => "${::staging::path}/codedeploy/install auto",
