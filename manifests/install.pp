@@ -41,7 +41,7 @@ class codedeploy::install {
         mode    => '0740',
       }
 
-      File<| $title == "${::staging::path}/codedeploy/install" |> ~> Exec['install_codedeploy_agent']
+      File<| $title == "${::staging::path}/codedeploy/install/mode" |> ~> Exec['install_codedeploy_agent']
 
       exec { 'install_codedeploy_agent':
         command     => "${::staging::path}/codedeploy/install auto",
