@@ -42,10 +42,9 @@ class codedeploy::install {
 
       }
 
-      Exec<| $title == "${::staging::path}/codedeploy/install" |> ~> Exec['install_codedeploy_agent']
-
       exec { 'install_codedeploy_agent':
         command     => "${::staging::path}/codedeploy/install auto",
+        subscribe   => Exec["${::staging::path}/codedeploy/install"]
         refreshonly => true,
       }
 
