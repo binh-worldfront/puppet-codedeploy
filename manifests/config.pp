@@ -30,11 +30,19 @@ class codedeploy::config (
   }
 
   if $::codedeploy::user {
-    file_line{'set codedeploy user':
+    file_line{'set upstart codedeploy user':
       ensure => present,
       path   => '/etc/init.d/codedeploy-agent',
       match  => '^CODEDEPLOY_USER=.*',
       line   => "CODEDEPLOY_USER=\"${::codedeploy::user}\"",
+      notify => Service[$::codedeploy::service_name]
+    }
+
+    file_line{'set systemd codedeploy user':
+      ensure => present,
+      path   => '/etc/init.d/codedeploy-agent.service',
+      match  => '^#User=.*',
+      line   => "User=\"${::codedeploy::user}\"",
       notify => Service[$::codedeploy::service_name]
     }
   }
