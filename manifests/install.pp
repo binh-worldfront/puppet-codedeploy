@@ -49,7 +49,7 @@ class codedeploy::install {
       }
 
       ~> exec { 'stop_codeploy_agent_after_install':
-        command     => "service ${::codedeploy::service_name} stop",
+        command     => "${::codedeploy::base_dir}/bin/codedeploy-agent stop",
         refreshonly => true
       }
 
