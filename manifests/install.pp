@@ -21,10 +21,10 @@ class codedeploy::install {
     'Debian': {
       if $::codedeploy::user {
         file {[$::codedeploy::base_dir, $::codedeploy::log_dir]:
-          ensure  => directory,
-          owner   => $::codedeploy::user,
-          group   => $::codedeploy::user,
-          before  => Exec['install_codedeploy_agent'],
+          ensure => directory,
+          owner  => $::codedeploy::user,
+          group  => $::codedeploy::user,
+          before => Exec['install_codedeploy_agent'],
         }
       }
 
@@ -33,18 +33,29 @@ class codedeploy::install {
           ensure => present,
         }
       }
-      include ::staging
-      staging::file {'install':
-        source  => "https://aws-codedeploy-${codedeploy::region}.s3.amazonaws.com/latest/install",
+
+      class {'archive::staging':
+        mode => '0755'
+      }
+
+      file { "${::archive::staging::path}/codedeploy":
+        ensure  => directory,
         owner   => 'root',
         group   => 'root',
-        mode    => '0740',
+        mode    => '0755',
+        require => Class['archive::staging'],
+      }
 
+      archive { "${::archive::staging::path}/codedeploy/install":
+        source  => "https://aws-codedeploy-${codedeploy::region}.s3.amazonaws.com/latest/install",
+        user    => 'root',
+        group   => 'root',
+        require => File["${::archive::staging::path}/codedeploy"]
       }
 
       exec { 'install_codedeploy_agent':
-        command     => "${::staging::path}/codedeploy/install auto",
-        subscribe   => Exec["${::staging::path}/codedeploy/install"],
+        command     => "${::archive::staging::path}/codedeploy/install auto",
+        subscribe   => Archive["${::archive::staging::path}/codedeploy/install"],
         refreshonly => true,
       }
 
