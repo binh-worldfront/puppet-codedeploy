@@ -53,9 +53,15 @@ class codedeploy::install {
         require => File["${::archive::staging::path}/codedeploy"]
       }
 
+      file { "${::archive::staging::path}/codedeploy/install":
+        owner => 'root',
+        group => 'root',
+        mode  => '0755',
+      }
+
       exec { 'install_codedeploy_agent':
         command     => "${::archive::staging::path}/codedeploy/install auto",
-        subscribe   => Archive["${::archive::staging::path}/codedeploy/install"],
+        subscribe   => File["${::archive::staging::path}/codedeploy/install"],
         refreshonly => true,
       }
 
